@@ -20,5 +20,6 @@ export async function createApprovalRequest(requestId: string): Promise<string> 
   
   export async function executeCallback(requestId: string): Promise<string> {
     console.log(`Executing callback for request ${requestId}.`);
+    // throw new Error('模拟回调执行失败')
     return `========Callback executed for request ${requestId}.`;
   }

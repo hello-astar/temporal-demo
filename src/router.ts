@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 import { Connection, Client } from '@temporalio/client';
-import { approvalWorkflow, userApprovalSignal } from './workflows';
+import { approvalWorkflow, cancelRequestSignal, userApprovalSignal } from './workflows';
 import { nanoid } from 'nanoid';
 
 const router = new Router();
@@ -39,5 +39,18 @@ router.get('/approval/:userId', async (ctx) => {
 
   ctx.body = `Signal sent for ${userId} with approval: ${approved}`;
 });
+
+router.get('/cancel', async (ctx) => {
+    const connection = await Connection.connect();
+    const client = new Client({ connection });
+  
+    // 获取工作流句柄
+    const handle = client.workflow.getHandle(requestId);
+  
+    // 发送信号
+    await handle.signal(cancelRequestSignal);
+  
+    ctx.body = `Signal sent with cancel`;
+  });
 
 export default router;
