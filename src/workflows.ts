@@ -3,7 +3,7 @@ import { proxyActivities, defineSignal, setHandler, condition } from '@temporali
 // Only import the activity types
 import type * as activities from './activities';
 
-const { approveRequest, rejectRequest, cancelRequest, executeCallback } = proxyActivities<typeof activities>({
+const { approveRequest, rejectRequest, cancelRequest, executeTask } = proxyActivities<typeof activities>({
   startToCloseTimeout: '1 minute',
 });
 
@@ -45,10 +45,19 @@ export async function approvalWorkflow(requestId: string): Promise<string> {
   // 检查所有用户是否都审批通过
   if (approvals.user1 && approvals.user2 && approvals.user3) {
     const result = await approveRequest(requestId);
-    await executeCallback(requestId);
+    // 启动子工作流来处理回调任务
+    const tasks = ['task1', 'task2', 'task3']; // 假设这些是需要执行的任务
+    await callbackWorkflow(requestId, tasks);
     return result;
   } else {
     return await rejectRequest(requestId);
   }
 }
+
+export async function callbackWorkflow(requestId: string, tasks: string[]): Promise<void> {
+    for (const task of tasks) {
+      await executeTask(requestId, task);
+    }
+  }
+
 // @@@SNIPEND

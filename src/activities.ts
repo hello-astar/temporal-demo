@@ -18,8 +18,10 @@ export async function createApprovalRequest(requestId: string): Promise<string> 
     return `========Approval request ${requestId} canceled.`;
   }
   
-  export async function executeCallback(requestId: string): Promise<string> {
-    console.log(`Executing callback for request ${requestId}.`);
-    // throw new Error('模拟回调执行失败')
-    return `========Callback executed for request ${requestId}.`;
+  export async function executeTask(requestId: string, task: string): Promise<string> {
+    console.log(`Executing callback for request ${requestId}, task ${task}`);
+    if (task === 'task2') {
+        throw new Error('模拟回调执行失败')
+    }
+    return `========Callback executed for request ${requestId}, task ${task}.`;
   }
